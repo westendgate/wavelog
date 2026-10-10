@@ -79,7 +79,7 @@ if ($lang_code !== 'en' && file_exists(FCPATH . "assets/json/datatables_language
               var grid = "No";
             <?php } ?>
             <?php if ($this->uri->segment(2) != "search" && $this->uri->segment(2) != "satellites") { ?>
-            initmap(grid);
+            if (document.getElementById("map")) initmap(grid);
             <?php } ?>
 
       });
@@ -275,5 +275,10 @@ if ($lang_code !== 'en' && file_exists(FCPATH . "assets/json/datatables_language
             }
         </script>
     <?php } ?>
+  <?php if (!empty($visitor_globe_enabled)) { ?>
+    <link rel="stylesheet" href="<?= base_url('assets/css/visitor-globe.css') ?>">
+    <script src="<?= base_url('assets/js/globe/globe.gl.min.js') ?>"></script>
+    <script src="<?= base_url('assets/js/sections/visitor_globe.js') ?>"></script>
+  <?php } ?>
   </body>
 </html>

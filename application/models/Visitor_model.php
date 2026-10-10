@@ -2,6 +2,25 @@
 
 class Visitor_model extends CI_Model {
 
+	/** Aggregate repeats without the export map's 5,000-QSO cap. */
+	function get_globe_qsos($locations, $window) {
+		$table = $this->config->item('table_name');
+		$fields = array('COL_CALL', 'COL_GRIDSQUARE', 'COL_VUCC_GRIDS', 'COL_LAT', 'COL_LON',
+			'COL_MY_GRIDSQUARE', 'COL_MY_VUCC_GRIDS', 'COL_MY_LAT', 'COL_MY_LON',
+			'COL_QSL_RCVD', 'COL_LOTW_QSL_RCVD', 'COL_EQSL_QSL_RCVD', 'COL_QRZCOM_QSO_DOWNLOAD_STATUS', 'COL_CLUBLOG_QSO_DOWNLOAD_STATUS');
+		$columns = array_map(function ($field) use ($table) { return $table.'.'.$field; }, $fields);
+		$columns[] = 'station_profile.station_gridsquare';
+		$this->db->select(implode(',', $columns));
+		$this->db->select('COUNT(*) AS qso_count', FALSE);
+		$this->db->from($table);
+		$this->db->join('station_profile', 'station_profile.station_id = '.$table.'.station_id');
+		$this->db->where_in($table.'.station_id', $locations);
+		if ($window['start'] !== NULL) { $this->db->where($table.'.COL_TIME_ON >=', $window['start']); }
+		$this->db->where($table.'.COL_TIME_ON <=', $window['end']);
+		$this->db->group_by($columns);
+		return $this->db->get()->result();
+	}
+
 	function get_qsos($num, $StationLocationsArray, $band = '', $continent = '', $orbit = '', $contest = '', $start_date = '', $end_date = '', $day = '') {
 		$this->db->select($this->config->item('table_name').'.*, station_profile.*');
 		$this->db->from($this->config->item('table_name'));

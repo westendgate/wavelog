@@ -14,6 +14,8 @@ class Visitor extends CI_Controller {
 	function _remap($method, $params = []) {
 		if ($method == "config") {
 			$this->$method();
+		} elseif ($method == "globedata") {
+			$this->globedata();
 		} elseif ($method == "map") {
 			$this->map();
 		} elseif ($method == "satellites") {
@@ -129,6 +131,7 @@ class Visitor extends CI_Controller {
 
 				$data['page_title'] = __("Dashboard");
 				$data['slug'] = $public_slug;
+				$data['visitor_globe_enabled'] = ($this->optionslib->get_option('public_maps') ?? 'true') === 'true';
 
 				$data['oqrs_enabled'] = $this->oqrs_model->oqrs_enabled($public_slug);
 				$data['public_search_enabled'] = $this->publicsearch->public_search_enabled($public_slug);
@@ -654,6 +657,30 @@ class Visitor extends CI_Controller {
 
 		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($mappedcoordinates);
+	}
+
+	/** Public globe uses only station locations linked to the published logbook. */
+	public function globedata() {
+		if ($this->input->method(TRUE) !== 'GET') { show_error('Method not allowed', 405); return; }
+		if (($this->optionslib->get_option('public_maps') ?? 'true') !== 'true') { show_404(); return; }
+		$slug = $this->uri->segment(3);
+		$this->load->model('logbooks_model');
+		if (!$slug || !$this->logbooks_model->public_slug_exists($slug)) { show_404(); return; }
+		$locations = $this->logbooks_model->list_logbook_relationships($this->logbooks_model->public_slug_exists_logbook_id($slug));
+		if (!$locations || in_array(-1, $locations)) { show_404(); return; }
+		$this->load->library('Visitor_globe');
+		try { $window = Visitor_globe::window($this->input->get('period') ?? '24h'); }
+		catch (InvalidArgumentException $e) { show_error('Unknown period', 400); return; }
+		$this->load->library('Qra');
+		$this->load->model('visitor_model');
+		$this->load->model('stationsetup_model');
+		$this->load->model('user_model');
+		$preferences = $this->visitor_model->get_user_default_confirmation($this->stationsetup_model->public_slug_exists_userid($slug));
+		$rows = $this->visitor_model->get_globe_qsos($locations, $window);
+		$data = $this->visitor_globe->build($rows, $this->qra, function ($row) use ($preferences) {
+			return $this->visitor_model->qso_is_confirmed($row, $preferences);
+		});
+		$this->output->set_content_type('application/json')->set_header('Cache-Control: no-store')->set_output(json_encode($data));
 	}
 
 	public function calculate($qso, $locator1, $locator2, $user_default_confirmation) {

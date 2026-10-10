@@ -136,7 +136,25 @@ if ($public_maps_option == 'true') { ?>
 	<script>
 		let user_map_custom = JSON.parse('<?php echo $user_map_custom; ?>');
 	</script>
-	<div id="map" class="map-leaflet" style="width: 100%; height: 365px"></div>
+    <section class="visitor-globe-section" aria-label="QSO-Karte">
+      <div class="visitor-map-toolbar">
+        <div class="btn-group" role="group" aria-label="Kartenansicht">
+          <button type="button" class="btn btn-primary" data-visitor-view="globe" aria-pressed="true">3D-Globus</button>
+          <button type="button" class="btn btn-outline-primary" data-visitor-view="map" aria-pressed="false">2D-Karte</button>
+        </div>
+        <div id="visitor-globe-periods" class="btn-group" role="group" aria-label="Zeitraum">
+          <button type="button" class="btn btn-primary" data-globe-period="24h" aria-pressed="true">24 Stunden</button>
+          <button type="button" class="btn btn-outline-primary" data-globe-period="month" aria-pressed="false">Aktueller Monat</button>
+          <button type="button" class="btn btn-outline-primary" data-globe-period="year" aria-pressed="false">Aktuelles Jahr</button>
+          <button type="button" class="btn btn-outline-primary" data-globe-period="all" aria-pressed="false">Gesamt</button>
+        </div>
+      </div>
+      <div id="visitor-globe-panel">
+        <div id="visitor-globe" data-endpoint="<?= htmlspecialchars(site_url('visitor/globedata/'.$slug), ENT_QUOTES, 'UTF-8') ?>" data-texture="<?= htmlspecialchars(base_url('assets/images/earth-blue-marble.jpg'), ENT_QUOTES, 'UTF-8') ?>" aria-label="Drehbarer Globus mit QSO-Verbindungen"></div>
+        <div class="visitor-globe-info"><span id="visitor-globe-status" role="status" aria-live="polite">Verbindungen werden geladen …</span><span><span class="visitor-globe-green">●</span> Bestätigt &nbsp; <span class="visitor-globe-red">●</span> Unbestätigt · Zeiträume in UTC · Ziehen zum Drehen, Scrollen zum Zoomen</span></div>
+      </div>
+      <div id="visitor-map-panel" hidden><div id="map" class="map-leaflet" style="width: 100%; height: 365px"></div><p class="visitor-globe-info">Die 2D-Karte zeigt die QSOs der aktuellen Tabellen-Seite.</p></div>
+    </section>
 <?php } ?>
 
 <div id="container" style="padding-top: 0px; margin-top: 5px;" class="container dashboard">
