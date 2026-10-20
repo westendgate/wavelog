@@ -69,17 +69,24 @@ class Map extends CI_Controller {
 		$this->load->view('interface_assets/footer', $footerData);
 	}
 
-	/**
- * Propagation map
- */
-public function propagation() {
-        $data['page_title'] = "Ham-Dash";
-        $footerData = [];
+	/** Ham-Dash live and archive share the existing authorization in __construct. */
+	public function propagation() {
+		$this->render_hamdash(false);
+	}
 
-        $this->load->view('interface_assets/header', $data);
-        $this->load->view('map/propagation');
-        $this->load->view('interface_assets/footer', $footerData);
-}
+	public function propagation_archive() {
+		$this->render_hamdash(true);
+	}
+
+	private function render_hamdash($archive) {
+		$data = [
+			'page_title' => $archive ? __("Propagation Archive") . ' · Ham-Dash' : 'Ham-Dash',
+			'hamdash_archive' => $archive,
+		];
+		$this->load->view('interface_assets/header', $data);
+		$this->load->view('map/propagation', $data);
+		$this->load->view('interface_assets/footer', []);
+	}
 
 	/**
 	 * AJAX endpoint to get QSO data for a specific country
