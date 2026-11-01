@@ -27414,3 +27414,15 @@ msgstr "LoTW Nutzer. Letzter Upload vom "
 #~ msgstr ""
 #~ "Du hast noch kein Stationslogbuch angelegt. Klicke hier, um eines "
 #~ "anzulegen:"
+
+#: application/views/map/propagation.php
+msgid "Propagation Archive"
+msgstr "Ausbreitungsarchiv"
+
+#: application/views/map/propagation.php
+msgid "Live Map"
+msgstr "Live-Karte"
+
+#: application/views/map/propagation.php
+msgid "Ham-Dash views"
+msgstr "Ham-Dash-Ansichten"

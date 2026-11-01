@@ -23899,3 +23899,15 @@ msgstr ""
 #: src/QSLManager/QSO.php:921
 msgid "LoTW User. Last upload was "
 msgstr ""
+
+#: application/views/map/propagation.php
+msgid "Propagation Archive"
+msgstr ""
+
+#: application/views/map/propagation.php
+msgid "Live Map"
+msgstr ""
+
+#: application/views/map/propagation.php
+msgid "Ham-Dash views"
+msgstr ""

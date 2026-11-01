@@ -225,11 +225,15 @@ function echo_table_header_col($name) {
 <?php } ?>
 <?php $this->load->view('layout/messages'); ?>
 
-	<div class="d-flex justify-content-end mt-3">
+	<div class="d-flex justify-content-end flex-wrap gap-2 mt-3">
 		<a class="btn btn-primary" href="<?= site_url('map/propagation'); ?>">
 			<i class="fas fa-broadcast-tower" aria-hidden="true"></i>
 			<?= "Ham-Dash"; ?>
 		</a>
+        <a class="btn btn-outline-primary" href="<?= html_escape(site_url('map/propagation_archive')); ?>">
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+            <?= html_escape(__("Propagation Archive")); ?>
+        </a>
 	</div>
 </div>
 

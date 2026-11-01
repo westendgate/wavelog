@@ -1,0 +1,25 @@
+name: Ham-Dash archive integration
+on:
+  pull_request:
+    paths:
+      - 'application/controllers/Map.php'
+      - 'application/views/map/propagation.php'
+      - 'application/views/dashboard/index.php'
+      - 'tests/hamdash_archive.php'
+      - '.github/workflows/hamdash-archive.yml'
+  push:
+    branches: ['feat/propagation-archive']
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PHP syntax and live/archive integration
+        run: |
+          php -l application/controllers/Map.php
+          php -l application/views/map/propagation.php
+          php -l application/views/dashboard/index.php
+          php -l tests/hamdash_archive.php
+          php tests/hamdash_archive.php
